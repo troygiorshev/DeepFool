@@ -84,6 +84,7 @@ autoencoder.fit(x_train, x_train,
                )
 '''
 
+
 autoencoder_train = autoencoder.fit(x_train_noisy, train_X,
                 epochs=20,
                 batch_size=128,
@@ -91,6 +92,7 @@ autoencoder_train = autoencoder.fit(x_train_noisy, train_X,
                 validation_data=(x_valid_noisy, valid_X)
                )  
 
+autoencoder.save('dae_mnist_autoencoder.h5')
 
 pred = autoencoder.predict(x_test_noisy)
 
