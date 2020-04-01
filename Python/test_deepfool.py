@@ -16,7 +16,7 @@ import os
 
 def main():
     # Number of images to perturb, 0 means "all of them"
-    N = 1000
+    N = 10000
     # List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
     r_arr = []
     # List to hold original labels
@@ -68,7 +68,7 @@ def main():
             orig_img = Image.open(base + "raw/" + name)
             
             # Preprocessing only works for colour images
-            if (orig_img.mode == "L"):
+            if (orig_img.mode != "RBG"):
                 orig_img = orig_img.convert(mode="RGB")
 
             if (orig_img.mode == "RGB"):    # Belt-and-suspenders check
