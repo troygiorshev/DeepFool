@@ -1,7 +1,7 @@
 import numpy as np 
 import cv2 
 from matplotlib import pyplot as plt 
-import imageio
+#import imageio
 import os
 import glob
 
@@ -26,12 +26,14 @@ def denoiseColor(filepath):
     dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 15) 
     return dst
 
-path = '../data/perturbed/1/'
+base = "../data/ILSVRC2012_img_val/"
+pert_path = base + "perturbed/"
+save_path = base + "denoisedperturbed/"
 
-files = [f for f in glob.glob(path + "**/*.jpeg", recursive=True)]
+files = [f for f in glob.glob(pert_path + "**/*.jpeg", recursive=True)]
 
+print(len(files))
 
 for path in files:
     img = denoiseColor(path) 
-    savefile='../data/denoisedperturbed/'
-    cv2.imwrite(savefile+os.path.basename(path), img)
+    cv2.imwrite(save_path+os.path.basename(path), img)
