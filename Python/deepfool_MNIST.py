@@ -76,6 +76,7 @@ def deepfool(image, net, num_classes=10, overshoot=0.02, max_iter=50):
         else:
             pert_image = image + (1+overshoot)*torch.from_numpy(r_tot)
 
+        pert_image = pert_image.unsqueeze(0)
         x = Variable(pert_image, requires_grad=True)
         fs = net.forward(x)
         k_i = np.argmax(fs.data.cpu().numpy().flatten())

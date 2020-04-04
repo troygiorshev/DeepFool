@@ -91,7 +91,6 @@ def main():
                 
                 #print(im.shape)
                 #quit()
-
                 r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
 
                 # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
