@@ -13,10 +13,8 @@ import torchvision.models as models
 from PIL import Image
 from deepfool import deepfool
 import os
-#import cv2
 
 def main():
-    """Main"""
     # Number of images to perturb, 0 means "all of them"
     N = 10000
     # List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
@@ -59,6 +57,7 @@ def main():
     _, _, files_raw = next(raw_walk_gen)
     files_tmp = [f for f in files_raw if f != ".gitignore"] # Remove .gitignore
     files = [f for f in files_tmp if not (f in pert_files)]
+
     sorted_files = sorted(files, key=lambda item: int(item[18:23]))
 
     end = N if N != 0 else len(sorted_files)
@@ -92,7 +91,6 @@ def main():
                 
                 #print(im.shape)
                 #quit()
-
                 r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
 
                 # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
