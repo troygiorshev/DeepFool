@@ -3,4 +3,4 @@ data/
 **/.vscode/
 **/__pycache__/
 # Go find every .gitignore and DON'T ignore them
-!**.gitignore
+!**/.gitignore
