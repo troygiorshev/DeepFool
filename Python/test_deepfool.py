@@ -25,8 +25,6 @@ def main():
     pert_labels = []
     # List to hold L2 norms
     L2_norms = []
-    # List of original images
-    orig_imgs = []
     # Cumulative sum for rho
     rho_sum = 0
 
