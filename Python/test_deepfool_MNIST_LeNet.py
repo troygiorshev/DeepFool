@@ -146,6 +146,17 @@ test_loader = torch.utils.data.DataLoader(
 net = LeNet5()
 net.load_state_dict(torch.load("../models/MNIST/LeNet/model.pth"))
 
+# List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
+r_arr = []
+# List to hold original labels
+orig_labels = []
+# List to hold perturbed labels
+pert_labels = []
+# List to hold L2 norms
+L2_norms = []
+# Cumulative sum for rho
+rho_sum = 0
+
 # Switch to evaluation mode
 net.eval()
 
@@ -185,7 +196,8 @@ for batch_idx, (data, target) in enumerate(test_loader):
         """
 
         r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
-
+        
+        
         print("Original label = ", label_orig)
         print("Perturbed label = ", label_pert)
 
@@ -197,6 +209,19 @@ for batch_idx, (data, target) in enumerate(test_loader):
         plt.title(label_pert)
         plt.show()
         """
+        ### RHO CALCULATION
+        # Get vector form of image so L2 norm of image x can be calculated (See denominator of eqn 15 in DeepFool paper)
+        img_arr = np.array(tf(im))
+        img_vect = img_arr.ravel()
+        L2_norms.append(np.linalg.norm(img_vect))
+
+        # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
+        r_norm = np.linalg.norm(r)
+        r_arr.append(r_norm)
+
+        # Add to cumulative sum term to get rho (See eqn 15 in DeepFool paper)
+        rho_sum = rho_sum + r_norm / np.linalg.norm(img_vect)
+
 
         # Write image file to directory to hold perturbed images
         if (os.path.exists('../data/MNIST/perturbed') != 1):
@@ -217,4 +242,9 @@ for batch_idx, (data, target) in enumerate(test_loader):
                 writer.writerow([str(k) + '.JPEG', str(label_orig)])
                 
         k += 1
+
+
+# Compute average robustness (rho) for the simulation (See eqn 15 in DeepFool paper)
+rho = (1/k)*rho_sum
+print(f"Number of samples: {k}, Average robustness: {rho}")
 
