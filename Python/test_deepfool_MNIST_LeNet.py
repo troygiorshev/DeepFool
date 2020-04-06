@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
+import tensorflow as tflow
 import torchvision.transforms as transforms
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,43 +14,119 @@ import torchvision.models as models
 from PIL import Image
 from deepfool import deepfool
 import os
+from collections import OrderedDict
 
 
-class Net(nn.Module):
-    def __init__(self, output_dim):
-        super().__init__()
-        self.conv1 = nn.Conv2d(in_channels = 1,
-                               out_channels = 6,
-                               kernel_size = 5)
-        self.conv2 = nn.Conv2d(in_channels = 6,
-                               out_channels = 16,
-                               kernel_size = 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, output_dim)
+class C1(nn.Module):
+    def __init__(self):
+        super(C1, self).__init__()
 
-    def forward(self, x):
-        x = self.conv1(x)
-        x = F.relu(x)
-        x = F.max_pool2d(x, kernel_size = 2)
-        x = self.conv2(x)
-        x = F.relu(x)
-        x = F.max_pool2d(x, kernel_size = 2)
-        x = x.view(x.shape[0], -1)
-        x = self.fc1(x)
-        x = F.relu(x)
-        x = self.fc2(x)
-        x = F.relu(x)
-        x = self.fc3(x)
-        return x
+        self.c1 = nn.Sequential(OrderedDict([
+            ('c1', nn.Conv2d(1, 6, kernel_size=(5, 5))),
+            ('relu1', nn.ReLU()),
+            ('s1', nn.MaxPool2d(kernel_size=(2, 2), stride=2))
+        ]))
 
+    def forward(self, img):
+        output = self.c1(img)
+        return output
+
+
+class C2(nn.Module):
+    def __init__(self):
+        super(C2, self).__init__()
+
+        self.c2 = nn.Sequential(OrderedDict([
+            ('c2', nn.Conv2d(6, 16, kernel_size=(5, 5))),
+            ('relu2', nn.ReLU()),
+            ('s2', nn.MaxPool2d(kernel_size=(2, 2), stride=2))
+        ]))
+
+    def forward(self, img):
+        output = self.c2(img)
+        return output
+
+
+class C3(nn.Module):
+    def __init__(self):
+        super(C3, self).__init__()
+
+        self.c3 = nn.Sequential(OrderedDict([
+            ('c3', nn.Conv2d(16, 120, kernel_size=(5, 5))),
+            ('relu3', nn.ReLU())
+        ]))
+
+    def forward(self, img):
+        output = self.c3(img)
+        return output
+
+
+class F4(nn.Module):
+    def __init__(self):
+        super(F4, self).__init__()
+
+        self.f4 = nn.Sequential(OrderedDict([
+            ('f4', nn.Linear(120, 84)),
+            ('relu4', nn.ReLU())
+        ]))
+
+    def forward(self, img):
+        output = self.f4(img)
+        return output
+
+
+class F5(nn.Module):
+    def __init__(self):
+        super(F5, self).__init__()
+
+        """
+        self.f5 = nn.Sequential(OrderedDict([
+            ('f5', nn.Linear(84, 10)),
+            ('sig5', nn.LogSoftmax(dim=-1))
+        ]))
+        """
+        # Modified to remove softmax, as required by DeepFool
+        self.f5 = nn.Sequential(OrderedDict([
+            ('f5', nn.Linear(84, 10))
+        ]))
+
+    def forward(self, img):
+        output = self.f5(img)
+        return output
+
+
+class LeNet5(nn.Module):
+    """
+    Input - 1x32x32
+    Output - 10
+    """
+    def __init__(self):
+        super(LeNet5, self).__init__()
+
+        self.c1 = C1()
+        self.c2_1 = C2() 
+        self.c2_2 = C2() 
+        self.c3 = C3() 
+        self.f4 = F4() 
+        self.f5 = F5() 
+
+    def forward(self, img):
+        output = self.c1(img)
+
+        x = self.c2_1(output)
+        output = self.c2_2(output)
+
+        output += x
+
+        output = self.c3(output)
+        output = output.view(img.size(0), -1)
+        output = self.f4(output)
+        output = self.f5(output)
+        return output
+
+    
 # Load data
-n_epochs = 3
-batch_size_train = 64
 batch_size_test = 1000
-learning_rate = 0.01
-momentum = 0.5
-log_interval = 10
 
 random_seed = 1
 torch.manual_seed(random_seed)  # Deterministic
@@ -57,20 +134,15 @@ torch.manual_seed(random_seed)  # Deterministic
 test_loader = torch.utils.data.DataLoader(
     torchvision.datasets.MNIST('../data/', train=False, download=False,
                             transform=torchvision.transforms.Compose([
-                            torchvision.transforms.Resize(32),
-                            torchvision.transforms.ToTensor(),
-                            torchvision.transforms.Normalize(
-                                (0.1307,), (0.3081,))
-                            ])),
-    batch_size=batch_size_test, shuffle=True)
-
-# Reminding ourselves what this looks like
-examples = enumerate(test_loader)
-batch_idx, (example_data, example_targets) = next(examples)
-print(example_data[1].shape)
+                                torchvision.transforms.Resize(32),
+                                torchvision.transforms.ToTensor(),
+                                torchvision.transforms.Normalize(
+                                    (0.1307,), (0.3081,))
+                                ])),
+        batch_size=batch_size_test, shuffle=True)
 
 # Network you're using (can change to whatever)
-net = Net(10)
+net = LeNet5()
 net.load_state_dict(torch.load("../models/MNIST/LeNet/model.pth"))
 
 # Switch to evaluation mode
@@ -81,124 +153,53 @@ def clip_tensor(A, minv, maxv):
     A = torch.min(A, maxv*torch.ones(A.shape))
     return A
 
+k = 1
+
 for batch_idx, (data, target) in enumerate(test_loader):
-    r, loop_i, label_orig, label_pert, pert_image = deepfool(data, net)
-    print(label_orig, label_pert)
-    quit()
     for im, label in zip(data, target):
-        r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
-        print(label_orig, label_pert)
-        quit()
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Get list of files in ImageNet directory (you gotta save this in DeepFool/Python to get it to work like this)
-for (root, dirs, files) in os.walk("ILSVRC2012_img_val", topdown=True):
-    sorted_files = sorted(files, key=lambda item: int(item[18:23]))
-
-# Now for every image:
-for i in range(N):
-    iter = iter + 1
-    print("Iteration: ", iter)
-    # Something wrong with this image, this is a patch fix
-    if (sorted_files[i] != "ILSVRC2012_val_00000034.JPEG") and (sorted_files[i] != "ILSVRC2012_val_00000107.JPEG") and (sorted_files[i] != "ILSVRC2012_val_00000118.JPEG"):
-        # Open image in directory (traverse from top down)
-        orig_img = Image.open("ILSVRC2012_img_val/" + sorted_files[i])
-
-
-        mean = [ 0.485, 0.456, 0.406 ]
-        std = [ 0.229, 0.224, 0.225 ]
-
-        # Get vector form of image so L2 norm of image x can be calculated (See denominator of eqn 15 in DeepFool paper)
-        img_arr = np.array(orig_img)
-        img_vect = img_arr.ravel()
-        L2_norms.append(np.linalg.norm(img_vect))
-
-
-        # Remove the mean
-        im = torchvision.transforms.Compose([
-                torchvision.transforms.Resize(32),
-                torchvision.transforms.ToTensor(),
-                torchvision.transforms.Normalize(
-                    (0.1307,), (0.3081,))
-                ])(orig_img)
-
-
-        r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
-
-        # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
-        r_norm = np.linalg.norm(r)
-        r_arr.append(r_norm)
-
-        # Add original labels and perturbed labels to array (just in case you need them later, not rlly using rn)
-        orig_labels.append(label_orig)
-        pert_labels.append(label_pert)
-
-        labels = open(os.path.join('synset_words.txt'), 'r').read().split('\n')
-
-        str_label_orig = labels[np.int(label_orig)].split(',')[0]
-        str_label_pert = labels[np.int(label_pert)].split(',')[0]
-
-        # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
-        r_norm = np.linalg.norm(r)
-        r_arr.append(r_norm)
-
-        # Add original labels and perturbed labels to array (just in case you need them later, not rlly using rn)
-        orig_labels.append(label_orig)
-        pert_labels.append(label_pert)
-
-        labels = open(os.path.join('synset_words.txt'), 'r').read().split('\n')
-
-        str_label_orig = labels[np.int(label_orig)].split(',')[0]
-        str_label_pert = labels[np.int(label_pert)].split(',')[0]
-
-        print("Original label = ", str_label_orig)
-        print("Perturbed label = ", str_label_pert)
-    
         clip = lambda x: clip_tensor(x, 0, 255)
 
-        ### These commented lines were throwing errors
+        tf = transforms.Compose([transforms.Normalize(mean = (0,),
+                                                      std = ((1/0.3081),)),
+                                 transforms.Normalize(mean = (-.1307,), 
+                                                      std=(1,)),
+                                 transforms.Lambda(clip),
+                                 transforms.ToPILImage(),
+                                 transforms.Resize(32)])
 
-        #tf = transforms.Compose([transforms.Normalize(mean=[0, 0, 0], std=map(lambda x: 1 / x, std)),
-        #transforms.Normalize(mean=map(lambda x: -x, mean), std=[1, 1, 1]),
-        #transforms.Lambda(clip),
-        #transforms.ToPILImage(),
-        #transforms.CenterCrop(224)])
-    
-        ### Changed it to this
+        # Save original image in "../data/MNIST/orig" (MNIST/raw already contains the weird .gz things)
+        if (os.path.exists('../data/MNIST/orig') != 1):
+            os.mkdir('../data/MNIST/orig')
+        tf(im).save(
+                    '../data/MNIST/orig/' + str(k) + '.JPEG')
 
-        tf =  transforms.Compose([transforms.Normalize(mean = [0, 0, 0],
-                           std = [(1/0.229), (1/0.244), (1/0.255)]), transforms.Normalize(mean = [-0.485, -0.456, -0.406], std=[1,1,1]),
-              transforms.Lambda(clip), transforms.ToPILImage(),
-              transforms.Resize(256),
-              transforms.CenterCrop(224)])
+        """
+        print(im.size())
+        print(im)
+        plt.figure()
+        plt.imshow(tf(im))
+        plt.title("original")
+        plt.show()
+        """
+
+        r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
+
+        print("Original label = ", label_orig)
+        print("Perturbed label = ", label_pert)
+
+        """
+        print(pert_image[0].size())
+        print(pert_image[0])
+        plt.figure()
+        plt.imshow(tf(pert_image.cpu()[0]))
+        plt.title(label_pert)
+        plt.show()
+        """
 
         # Write image file to directory to hold perturbed images
-        if (os.path.exists('pert_imgs') != 1):
-            os.mkdir('pert_imgs')
-            tf(pert_image.cpu()[0]).save('pert_imgs/' + sorted_files[i], 'JPEG')
-    
-
-        ## Commented this out because u probably don't want a bunch of images popping up
-    
-        #plt.figure()
-        #plt.imshow(tf(pert_image.cpu()[0]))
-        #plt.title(str_label_pert)
-        #plt.show()
-
-        # Add to cumulative sum term to get rho (See eqn 15 in DeepFool paper)
-        rho_sum = rho_sum + r_norm / np.linalg.norm(img_vect)
-
-# Compute average robustness (rho) for the simulation (See eqn 15 in DeepFool paper)
-rho = (1/N)*rho_sum
-print(rho)
+        if (os.path.exists('../data/MNIST/perturbed') != 1):
+            os.mkdir('../data/MNIST/perturbed')
+        tf(pert_image.cpu()[0]).save(
+                    '../data/MNIST/perturbed/' + str(k) + '.JPEG')
+        k += 1

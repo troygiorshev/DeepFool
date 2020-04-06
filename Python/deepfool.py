@@ -24,7 +24,6 @@ def deepfool(image, net, num_classes=10, overshoot=0.02, max_iter=50):
     else:
         print("Using CPU")
 
-
     f_image = net.forward(Variable(image[None, :, :, :], requires_grad=True)).data.cpu().numpy().flatten()
     I = (np.array(f_image)).flatten().argsort()[::-1]
 
@@ -69,6 +68,7 @@ def deepfool(image, net, num_classes=10, overshoot=0.02, max_iter=50):
         # compute r_i and r_tot
         # Added 1e-4 for numerical stability
         r_i =  (pert+1e-4) * w / np.linalg.norm(w)
+
         r_tot = np.float32(r_tot + r_i)
 
         if is_cuda:

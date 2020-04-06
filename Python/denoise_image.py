@@ -1,7 +1,7 @@
 import numpy as np 
 import cv2 
 from matplotlib import pyplot as plt 
-import imageio
+#import imageio
 import os
 import glob
 from PIL import Image
@@ -28,7 +28,6 @@ def denoiseColor(filepath):
     img = cv2.imread(filepath) 
     dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 15) 
     return dst
-
 
 def denoiseGrayscale(filepath):
     img = cv2.imread(filepath) 
@@ -104,3 +103,4 @@ def main():
 
 if __name__=='__main__':
     main()
+
