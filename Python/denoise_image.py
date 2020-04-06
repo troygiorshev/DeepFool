@@ -69,23 +69,23 @@ def adjust_images(input_path, output_folder):
         filename = os.path.basename(path)
 
         img = denoiseColor(path) 
-        savefile='../data/'+output_folder+'/denoised/'
+        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/denoised/'
         cv2.imwrite(savefile+os.path.basename(path), img)
 
         img = sharpen(path)
-        savefile='../data/'+output_folder+'/sharpen/'
+        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/sharpen/'
         img.save(savefile+os.path.basename(path))
 
         img = bilateralfilter(path) 
-        savefile='../data/'+output_folder+'/bilateralfilter/'
+        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/bilateralfilter/'
         cv2.imwrite(savefile+filename, img)
 
         img = gaussianblur(path)
-        savefile='../data/'+output_folder+'/gaussianblur/'
+        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/gaussianblur/'
         cv2.imwrite(savefile+filename, img)
 
         img = medianblur(path)
-        savefile='../data/'+output_folder+'/medianblur/'
+        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/medianblur/'
         cv2.imwrite(savefile+filename, img)
         
         i = i+1
@@ -95,11 +95,11 @@ def adjust_images(input_path, output_folder):
 def main():
     # path to perturbed images
     input_path = '../data/perturbed/1/'
-    output_folder = 'ILSVRCperturbedModification'
+    output_folder = 'perturbedModification'
     adjust_images(input_path, output_folder)
 
     input_path = '../data/ILSVRC2012_img_val/'
-    output_folder = 'ILSVRCoriginalImgModification'
+    output_folder = 'originalImgModification'
     adjust_images(input_path, output_folder)
 
 if __name__=='__main__':

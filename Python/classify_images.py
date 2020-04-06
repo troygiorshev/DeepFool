@@ -31,17 +31,17 @@ def classify_images():
     )])
 
     paths = {'../data/ILSVRC2012_img_val/': 'imagenet_classify.csv',
-    '../data/ILSVRCoriginalImgModification/denoised/':'imagenet_classify_denoised.csv',
-    '../data/ILSVRCoriginalImgModification/sharpen/': 'imagenet_classify_sharpened.csv',
-    '../data/ILSVRCoriginalImgModification/bilateralfilter/': 'imagenet_classify_bilateralfilter.csv',
-    '../data/ILSVRCoriginalImgModification/gaussianblur/': 'imagenet_classify_gaussianblur.csv',
-    '../data/ILSVRCoriginalImgModification/medianblur/': 'imagenet_classify_medianblur.csv',
-    '../data/perturbed/1/': 'imagenet_classify_perturbed.csv', #you may have to change this filepath
-    '../data/ILSVRCperturbedModification/denoised/':'imagenet_classify_perturbed_denoised.csv',
-    '../data/ILSVRCperturbedModification/sharpen/': 'imagenet_classify_perturbed_sharpened.csv',
-    '../data/ILSVRCperturbedModification/bilateralfilter/': 'imagenet_classify_perturbed_bilateralfilter.csv',
-    '../data/ILSVRCperturbedModification/gaussianblur/': 'imagenet_classify_perturbed_gaussianblur.csv',
-    '../data/ILSVRCperturbedModification/medianblur/': 'imagenet_classify_perturbed_medianblur.csv'
+    '../data/ILSVRC2012_img_val/originalImgModification/denoised/':'../data/ILSVRC2012_img_val/classification/imagenet_classify_denoised.csv',
+    '../data/ILSVRC2012_img_val/originalImgModification/sharpen/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_sharpened.csv',
+    '../data/ILSVRC2012_img_val/originalImgModification/bilateralfilter/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_bilateralfilter.csv',
+    '../data/ILSVRC2012_img_val/originalImgModification/gaussianblur/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_gaussianblur.csv',
+    '../data/ILSVRC2012_img_val/originalImgModification/medianblur/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_medianblur.csv',
+    '../data/ILSVRC2012_img_val/perturbed/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed.csv', #you may have to change this filepath
+    '../data/ILSVRC2012_img_val/perturbedModification/denoised/':'../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_denoised.csv',
+    '../data/ILSVRC2012_img_val/perturbedModification/sharpen/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_sharpened.csv',
+    '../data/ILSVRC2012_img_val/perturbedModification/bilateralfilter/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_bilateralfilter.csv',
+    '../data/ILSVRC2012_img_val/perturbedModification/gaussianblur/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_gaussianblur.csv',
+    '../data/ILSVRC2012_img_val/perturbedModification/medianblur/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_medianblur.csv'
     }
 
     num_classes = 10
