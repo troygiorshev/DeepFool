@@ -15,6 +15,7 @@ from PIL import Image
 from deepfool import deepfool
 import os
 from collections import OrderedDict
+import csv
 
 
 class C1(nn.Module):
@@ -202,4 +203,18 @@ for batch_idx, (data, target) in enumerate(test_loader):
             os.mkdir('../data/MNIST/perturbed')
         tf(pert_image.cpu()[0]).save(
                     '../data/MNIST/perturbed/' + str(k) + '.JPEG')
+
+        # Create .csv with original saved image name and predicted label
+        # If first image, want to create file so use 'w' arg
+        if (k == 1):
+            with open('../data/MNIST/orig_names_and_labels.csv', 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([str(k) + 'JPEG', str(label_orig)])
+        # Else, want to append to already existing file, so pass arg 'a'
+        else:
+            with open('../data/MNIST/orig_names_and_labels.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([str(k) + '.JPEG', str(label_orig)])
+                
         k += 1
+
