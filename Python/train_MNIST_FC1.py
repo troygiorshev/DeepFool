@@ -83,9 +83,7 @@ def main():
         network.train()
         for batch_idx, (data, target) in enumerate(train_loader):
             optimizer.zero_grad()
-            print(data.size())
             data = data.view(-1, 28*28)
-            print(data.size())
             output = network(data)
             loss = F.nll_loss(output, target)
             loss.backward()
