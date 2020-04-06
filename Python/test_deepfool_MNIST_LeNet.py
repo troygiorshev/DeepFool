@@ -168,6 +168,12 @@ for batch_idx, (data, target) in enumerate(test_loader):
                                  transforms.ToPILImage(),
                                  transforms.Resize(32)])
 
+        # Save original image in "../data/MNIST/orig" (MNIST/raw already contains the weird .gz things)
+        if (os.path.exists('../data/MNIST/orig') != 1):
+            os.mkdir('../data/MNIST/orig')
+        tf(im).save(
+                    '../data/MNIST/orig/' + str(k) + '.JPEG')
+
         """
         print(im.size())
         print(im)
