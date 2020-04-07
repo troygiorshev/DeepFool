@@ -29,7 +29,7 @@ class FC(nn.Module):
         self.l3 = nn.Linear(150, 10)
         
     def forward(self, x):
-        #x = x.view(-1, 28*28)
+        x = x.view(-1, 28*28)
         x = self.l1(x)
         x = self.relu1(x)
         x = self.l2(x)
