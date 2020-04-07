@@ -16,6 +16,7 @@ from deepfool import deepfool
 import os
 from collections import OrderedDict
 import csv
+from itertools import chain
 
 class FC1(nn.Module):
     
@@ -42,17 +43,35 @@ batch_size_test = 1000
 random_seed = 1
 torch.manual_seed(random_seed)  # Deterministic
 
+# Unfortunately this grabs the data from "../data/MNIST/processed".
+# Whereas everything else is going into "../data/MNIST_FC/"
+# This won't be a problem, there will just be a strange lack of raw data in MNIST_FC/
+
 test_loader = torch.utils.data.DataLoader(
-    torchvision.datasets.MNIST('../data/', train=False, download=False,
-                            transform=torchvision.transforms.Compose([torchvision.transforms.ToTensor(),
+    torchvision.datasets.MNIST('../data/', train=False, download=True,
+                            transform=torchvision.transforms.Compose([
+                                torchvision.transforms.Resize(32),
+                                torchvision.transforms.ToTensor(),
                                 torchvision.transforms.Normalize(
                                     (0.1307,), (0.3081,))
                                 ])),
         batch_size=batch_size_test, shuffle=True)
 
+train_loader = torch.utils.data.DataLoader(
+    torchvision.datasets.MNIST('../data/', train=True, download=True,
+                            transform=torchvision.transforms.Compose([
+                                torchvision.transforms.Resize(32),
+                                torchvision.transforms.ToTensor(),
+                                torchvision.transforms.Normalize(
+                                    (0.1307,), (0.3081,))
+                                ])),
+        batch_size=batch_size_test, shuffle=True)
+
+full_loader = chain(train_loader, test_loader)
+
 # Network you're using (can change to whatever)
 net = FC1()
-net.load_state_dict(torch.load("../models/MNIST/FC1/model.pth"))
+net.load_state_dict(torch.load("../models/MNIST/FC/model.pth"))
 
 # List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
 r_arr = []
@@ -75,7 +94,7 @@ def clip_tensor(A, minv, maxv):
 
 k = 1
 
-for batch_idx, (data, target) in enumerate(test_loader):
+for batch_idx, (data, target) in enumerate(full_loader):
     for im, label in zip(data, target):
 
         clip = lambda x: clip_tensor(x, 0, 255)
@@ -88,10 +107,10 @@ for batch_idx, (data, target) in enumerate(test_loader):
                                  transforms.ToPILImage()])
 
         # Save original image in "../data/MNIST/orig" (MNIST/raw already contains the weird .gz things)
-        if (os.path.exists('../data/MNIST/orig') != 1):
-            os.mkdir('../data/MNIST/orig')
+        if (os.path.exists('../data/MNIST_FC/orig') != 1):
+            os.mkdir('../data/MNIST_FC/orig')
         tf(im).save(
-                    '../data/MNIST/orig/' + str(k) + '.JPEG')
+                    '../data/MNIST_FC/orig/' + str(k) + '.JPEG')
 
         """
         print(im.size())
@@ -131,20 +150,20 @@ for batch_idx, (data, target) in enumerate(test_loader):
 
 
         # Write image file to directory to hold perturbed images
-        if (os.path.exists('../data/MNIST/perturbedFC1') != 1):
-            os.mkdir('../data/MNIST/perturbedFC1')
+        if (os.path.exists('../data/MNIST_FC/perturbed') != 1):
+            os.mkdir('../data/MNIST_FC/perturbed')
         tf(pert_image.cpu()[0]).save(
-                    '../data/MNIST/perturbedFC1/' + str(k) + '.JPEG')
+                    '../data/MNIST_FC/perturbed/' + str(k) + '.JPEG')
 
         # Create .csv with original saved image name and predicted label
         # If first image, want to create file so use 'w' arg
         if (k == 1):
-            with open('../data/MNIST/orig_names_and_labelsFC1.csv', 'w', newline='') as file:
+            with open('../data/MNIST_FC/orig_names_and_labels.csv', 'w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([str(k) + 'JPEG', str(label_orig)])
         # Else, want to append to already existing file, so pass arg 'a'
         else:
-            with open('../data/MNIST/orig_names_and_labelsFC1.csv', 'a', newline='') as file:
+            with open('../data/MNIST_FC/orig_names_and_labels.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([str(k) + '.JPEG', str(label_orig)])
                 

@@ -95,8 +95,8 @@ def main():
                 train_losses.append(loss.item())
                 train_counter.append(
                     (batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
-                torch.save(network.state_dict(), '../models/MNIST/FC1/model.pth')
-                torch.save(optimizer.state_dict(), '../models/MNIST/FC1/optimizer.pth')
+                torch.save(network.state_dict(), '../models/MNIST/FC/model.pth')
+                torch.save(optimizer.state_dict(), '../models/MNIST/FC/optimizer.pth')
 
     def test():
         network.eval()
