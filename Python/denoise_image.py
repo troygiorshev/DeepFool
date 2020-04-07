@@ -89,25 +89,28 @@ def adjust_images(input_path, output_folder, dae=None):
         """
 
         #MNIST Manipulations
-
         img = MNISTdae(path, dae)
         savefile = '../data/MNIST/'+output_folder+'/dae/'
         cv2.imwrite(savefile+filename, img)
 
         img = denoiseColor(path) 
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         savefile='../data/MNIST/'+output_folder+'/denoised/'
         cv2.imwrite(savefile+filename, img)
 
 
-        img = bilateralfilter(path) 
+        img = bilateralfilter(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         savefile='../data/MNIST/'+output_folder+'/bilateralfilter/'
         cv2.imwrite(savefile+filename, img)
 
         img = gaussianblur(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         savefile='../data/MNIST/'+output_folder+'/gaussianblur/'
         cv2.imwrite(savefile+filename, img)
 
         img = medianblur(path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         savefile='../data/MNIST/'+output_folder+'/medianblur/'
         cv2.imwrite(savefile+filename, img)
 
@@ -137,6 +140,10 @@ def main():
 
     input_path = '../data/MNIST/perturbed/'
     output_folder = 'perturbedModification'
+    adjust_images(input_path, output_folder, dae)
+
+    input_path = '../data/MNIST/orig/'
+    output_folder = 'originalModification'
     adjust_images(input_path, output_folder, dae)
 
 
