@@ -43,7 +43,7 @@ def bilateralfilter(filepath):
 
 
 def adjust_images(input_path, output_folder):
-    files_all = [f for f in glob.glob(input_path + "**/*.jpeg", recursive=True)]
+    files_all = [f for f in glob.glob(input_path + "**/*.JPEG", recursive=True)]
     num_files = len(files_all)
 
     proc_list = []
