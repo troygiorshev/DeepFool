@@ -18,10 +18,10 @@ from collections import OrderedDict
 import csv
 from itertools import chain
 
-class FC1(nn.Module):
+class FC(nn.Module):
     
     def __init__(self):
-        super(FC1, self).__init__()
+        super(FC, self).__init__()
         self.l1 = nn.Linear(28*28, 500)
         self.relu1 = nn.ReLU()
         self.l2 = nn.Linear(500, 150)
@@ -29,13 +29,14 @@ class FC1(nn.Module):
         self.l3 = nn.Linear(150, 10)
         
     def forward(self, x):
-        x = x.view(-1, 28*28)
+        #x = x.view(-1, 28*28)
         x = self.l1(x)
         x = self.relu1(x)
         x = self.l2(x)
         x = self.relu2(x)
         x = self.l3(x)
-        return F.log_softmax(x)
+        #return F.log_softmax(x)
+        return x    # Deepfool needs the model BEFORE softmax
     
 # Load data
 batch_size_test = 1000
@@ -50,7 +51,6 @@ torch.manual_seed(random_seed)  # Deterministic
 test_loader = torch.utils.data.DataLoader(
     torchvision.datasets.MNIST('../data/', train=False, download=True,
                             transform=torchvision.transforms.Compose([
-                                torchvision.transforms.Resize(32),
                                 torchvision.transforms.ToTensor(),
                                 torchvision.transforms.Normalize(
                                     (0.1307,), (0.3081,))
@@ -60,7 +60,6 @@ test_loader = torch.utils.data.DataLoader(
 train_loader = torch.utils.data.DataLoader(
     torchvision.datasets.MNIST('../data/', train=True, download=True,
                             transform=torchvision.transforms.Compose([
-                                torchvision.transforms.Resize(32),
                                 torchvision.transforms.ToTensor(),
                                 torchvision.transforms.Normalize(
                                     (0.1307,), (0.3081,))
@@ -70,7 +69,7 @@ train_loader = torch.utils.data.DataLoader(
 full_loader = chain(train_loader, test_loader)
 
 # Network you're using (can change to whatever)
-net = FC1()
+net = FC()
 net.load_state_dict(torch.load("../models/MNIST/FC/model.pth"))
 
 # List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
