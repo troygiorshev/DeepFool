@@ -40,18 +40,19 @@ def classify_images():
                                     ])
 
     paths = {
-    #'../data/MNIST/raw/': '../data/MNIST/classification/MNIST_classify.csv',
-    #'../data/MNIST/originalImgModification/denoised/':'../data/MNIST/classification/MNIST_classify_denoised.csv',
-    #'../data/MNIST/originalImgModification/sharpen/': '../data/MNIST/classification/MNIST_classify_sharpened.csv',
-    #'../data/MNIST/originalImgModification/bilateralfilter/': '../data/MNIST/classification/MNIST_classify_bilateralfilter.csv',
-    #'../data/MNIST/originalImgModification/gaussianblur/': '../data/MNIST/classification/MNIST_classify_gaussianblur.csv',
-    #'../data/MNIST/originalImgModification/medianblur/': '../data/MNIST/classification/MNIST_classify_medianblur.csv',
+    '../data/MNIST/raw/': '../data/MNIST/classification/MNIST_classify.csv',
+    '../data/MNIST/originalImgModification/denoised/':'../data/MNIST/classification/MNIST_classify_denoised.csv',
+    '../data/MNIST/originalImgModification/sharpen/': '../data/MNIST/classification/MNIST_classify_sharpened.csv',
+    '../data/MNIST/originalImgModification/bilateralfilter/': '../data/MNIST/classification/MNIST_classify_bilateralfilter.csv',
+    '../data/MNIST/originalImgModification/gaussianblur/': '../data/MNIST/classification/MNIST_classify_gaussianblur.csv',
+    '../data/MNIST/originalImgModification/medianblur/': '../data/MNIST/classification/MNIST_classify_medianblur.csv'
     '../data/MNIST/perturbed/': '../data/MNIST/classification/MNIST_classify_perturbed.csv', #you may have to change this filepath
     '../data/MNIST/perturbedModification/denoised/':'../data/MNIST/classification/MNIST_classify_perturbed_denoised.csv',
     '../data/MNIST/perturbedModification/sharpen/': '../data/MNIST/classification/MNIST_classify_perturbed_sharpened.csv',
     '../data/MNIST/perturbedModification/bilateralfilter/': '../data/MNIST/classification/MNIST_classify_perturbed_bilateralfilter.csv',
     '../data/MNIST/perturbedModification/gaussianblur/': '../data/MNIST/classification/MNIST_classify_perturbed_gaussianblur.csv',
-    '../data/MNIST/perturbedModification/medianblur/': '../data/MNIST/classification/MNIST_classify_perturbed_medianblur.csv'
+    '../data/MNIST/perturbedModification/medianblur/': '../data/MNIST/classification/MNIST_classify_perturbed_medianblur.csv',
+    '../data/MNIST/perturbedModification/dae/': '../data/MNIST/classification/MNIST_classify_perturbed_dae.csv'
     }
 
     num_classes = 10
