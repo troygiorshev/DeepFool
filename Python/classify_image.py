@@ -12,7 +12,6 @@ import math
 import torchvision.models as models
 from PIL import Image
 import os
-import imageio
 import glob
 import csv
 import progressbar
@@ -30,7 +29,7 @@ def classify_images():
     std=[0.229, 0.224, 0.225]
     )])
 
-    paths = {'../data/ILSVRC2012_img_val/': 'imagenet_classify.csv',
+    paths = {'../data/ILSVRC2012_img_val/raw/': '../data/ILSVRC2012_img_val/classification/imagenet_classify.csv',
     '../data/ILSVRC2012_img_val/originalImgModification/denoised/':'../data/ILSVRC2012_img_val/classification/imagenet_classify_denoised.csv',
     '../data/ILSVRC2012_img_val/originalImgModification/sharpen/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_sharpened.csv',
     '../data/ILSVRC2012_img_val/originalImgModification/bilateralfilter/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_bilateralfilter.csv',
@@ -44,8 +43,6 @@ def classify_images():
     '../data/ILSVRC2012_img_val/perturbedModification/medianblur/': '../data/ILSVRC2012_img_val/classification/imagenet_classify_perturbed_medianblur.csv'
     }
 
-    num_classes = 10
-
     for input, output in paths.items():
         files = [f for f in glob.glob(input + "**/*.jpeg", recursive=True)]
         bar = progressbar.ProgressBar(maxval=len(files)).start()
@@ -53,26 +50,21 @@ def classify_images():
         i = 0
         for path in files:
             img = Image.open(path)
-            if (img.mode == "L"):
+            if (img.mode != "RGB"):
                 img = img.convert(mode="RGB")
 
             image = transform(img)
 
-            #im = torch.unsqueeze(image, 0)
-            #out = net(im)
-            #print(out)
-
             f_image = net.forward(Variable(image[None, :, :, :], requires_grad=True)).data.cpu().numpy().flatten()
             I = (np.array(f_image)).flatten().argsort()[::-1]
 
-            I = I[0:num_classes]
             label = I[0]
             classify[os.path.basename(path)]=label
             i = i+1
             bar.update(i)
 
         with open(output, 'w') as f:
-            writer = csv.writer(f)
+            writer = csv.writer(f, lineterminator='\n')
             for row in classify.items():
                 writer.writerow(row)
 
