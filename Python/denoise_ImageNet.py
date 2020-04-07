@@ -9,9 +9,6 @@ import progressbar
 import multiprocessing
 
 
-NUM_PROC = 6
-
-
 def denoiseColor(filepath):
     img = cv2.imread(filepath) 
     dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 15) 
