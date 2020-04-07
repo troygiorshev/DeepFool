@@ -27,4 +27,4 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
   * Extract to `data/ILSVRC2012_img_val/raw` (so the first image is `data/ILSVRC2012_img_val/raw/ILSVRC2012_val_00000001.JPEG`)
 * Run `test_deepfool.py` (That's `Python/test_deepfool.py`, as per above)
   * Note the Average robustness output
-* Run `denoise_image.py`
+* Run `denoise_ImageNet.py`
