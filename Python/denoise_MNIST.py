@@ -58,35 +58,12 @@ def MNISTdae(filepath, dae):
 
 
 def adjust_images(input_path, output_folder, dae=None):
-    files = [f for f in glob.glob(input_path + "**/*.jpeg", recursive=True)]
+    files = [f for f in glob.glob(input_path + "**/*.JPEG", recursive=True)]
 
     bar = progressbar.ProgressBar(maxval=len(files)).start()
     i = 0
     for path in files:
         filename = os.path.basename(path)
-
-        """
-        #IMAGENET Manipulations
-        img = denoiseColor(path) 
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/denoised/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = sharpen(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/sharpen/'
-        img.save(savefile+filename)
-
-        img = bilateralfilter(path) 
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/bilateralfilter/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = gaussianblur(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/gaussianblur/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = medianblur(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/medianblur/'
-        cv2.imwrite(savefile+filename, img)
-        """
 
         #MNIST Manipulations
         img = MNISTdae(path, dae)
@@ -123,18 +100,6 @@ def adjust_images(input_path, output_folder, dae=None):
 
 
 def main():
-    """
-    #IMAGENET
-    # path to perturbed images
-    input_path = '../data/ILSVRC2012_img_val/perturbed/'
-    output_folder = 'perturbedModification'
-    adjust_images(input_path, output_folder)
-
-    input_path = '../data/ILSVRC2012_img_val/raw/'
-    output_folder = 'originalImgModification'
-    adjust_images(input_path, output_folder)
-    """
-
     #MNIST
     dae = keras.models.load_model('dae_mnist_autoencoder.h5')
 

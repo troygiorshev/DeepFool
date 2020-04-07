@@ -15,7 +15,7 @@ Cloned from <https://github.com/LTS4/DeepFool>, following [DeepFool](https://arx
 Using [conda](https://docs.conda.io/en/latest/miniconda.html), at version 4.8.2 on both Windows 10 and Ubuntu 18.04.
 
 * `conda install pytorch=1.4.0 torchvision=0.5.0 cudatoolkit=10.1 -c pytorch -y`
-* `conda install matplotlib opencv progressbar2 -y`
+* `conda install matplotlib opencv progressbar2 keras -y`
 
 ## Workflow
 
@@ -32,3 +32,9 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
   * This populates the subfolders of `data/ILSVRC2012_img_val/originalImgModification/` and `data/ILSVRC2012_img_val/perturbedModification/`
 * Run `classify_ImageNet.py`
   * This populates `data/ILSVRC2012_img_val/classification/`
+
+### MNIST, LeNet
+
+* Download MNIST, place in `data/MNIST/raw/`
+
+* Run `denoise_MNIST.py`
