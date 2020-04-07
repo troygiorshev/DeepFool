@@ -16,7 +16,7 @@ import os
 
 def main():
     # Number of images to perturb, 0 means "all of them"
-    N = 10000
+    N = 0
     # List to hold L2 norms of r for all perturbed images so rho can be caluclated at the end
     r_arr = []
     # List to hold original labels
@@ -25,8 +25,6 @@ def main():
     pert_labels = []
     # List to hold L2 norms
     L2_norms = []
-    # List of original images
-    orig_imgs = []
     # Cumulative sum for rho
     rho_sum = 0
 
@@ -80,7 +78,6 @@ def main():
                 img_vect = img_arr.ravel()
                 L2_norms.append(np.linalg.norm(img_vect))
 
-
                 # Remove the mean
                 im = transforms.Compose([
                     transforms.Resize(256),
@@ -111,16 +108,6 @@ def main():
             
                 clip = lambda x: clip_tensor(x, 0, 255)
 
-                ### These commented lines were throwing errors
-
-                #tf = transforms.Compose([transforms.Normalize(mean=[0, 0, 0], std=map(lambda x: 1 / x, std)),
-                #transforms.Normalize(mean=map(lambda x: -x, mean), std=[1, 1, 1]),
-                #transforms.Lambda(clip),
-                #transforms.ToPILImage(),
-                #transforms.CenterCrop(224)])
-            
-                ### Changed it to this
-
                 tf =  transforms.Compose([transforms.Normalize(mean = [0, 0, 0],
                                 std = [(1/0.229), (1/0.244), (1/0.255)]), transforms.Normalize(mean = [-0.485, -0.456, -0.406], std=[1,1,1]),
                     transforms.Lambda(clip), transforms.ToPILImage(),
@@ -132,14 +119,6 @@ def main():
                     os.mkdir(base + 'perturbed')
                 tf(pert_image.cpu()[0]).save(
                     base + 'perturbed/' + name, 'JPEG')
-            
-
-                ## Commented this out because u probably don't want a bunch of images popping up
-            
-                #plt.figure()
-                #plt.imshow(tf(pert_image.cpu()[0]))
-                #plt.title(str_label_pert)
-                #plt.show()
 
                 # Add to cumulative sum term to get rho (See eqn 15 in DeepFool paper)
                 rho_sum = rho_sum + r_norm / np.linalg.norm(img_vect)

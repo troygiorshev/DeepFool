@@ -34,3 +34,4 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
   * This populates `data/ILSVRC2012_img_val/classification/`
 
 ### MNIST, Fully Connected 500-150-10
+
