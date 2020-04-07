@@ -44,7 +44,7 @@ def classify_images():
     }
 
     for input, output in paths.items():
-        files = [f for f in glob.glob(input + "**/*.jpeg", recursive=True)]
+        files = [f for f in glob.glob(input + "**/*.JPEG", recursive=True)]
         bar = progressbar.ProgressBar(maxval=len(files)).start()
         classify = {}
         i = 0
