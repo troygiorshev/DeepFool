@@ -16,6 +16,7 @@ from deepfool import deepfool
 import os
 from collections import OrderedDict
 import csv
+from itertools import chain
 
 
 class C1(nn.Module):
@@ -133,7 +134,7 @@ random_seed = 1
 torch.manual_seed(random_seed)  # Deterministic
 
 test_loader = torch.utils.data.DataLoader(
-    torchvision.datasets.MNIST('../data/', train=False, download=False,
+    torchvision.datasets.MNIST('../data/', train=False, download=True,
                             transform=torchvision.transforms.Compose([
                                 torchvision.transforms.Resize(32),
                                 torchvision.transforms.ToTensor(),
@@ -141,6 +142,18 @@ test_loader = torch.utils.data.DataLoader(
                                     (0.1307,), (0.3081,))
                                 ])),
         batch_size=batch_size_test, shuffle=True)
+
+train_loader = torch.utils.data.DataLoader(
+    torchvision.datasets.MNIST('../data/', train=True, download=True,
+                            transform=torchvision.transforms.Compose([
+                                torchvision.transforms.Resize(32),
+                                torchvision.transforms.ToTensor(),
+                                torchvision.transforms.Normalize(
+                                    (0.1307,), (0.3081,))
+                                ])),
+        batch_size=batch_size_test, shuffle=True)
+
+full_loader = chain(train_loader, test_loader)
 
 # Network you're using (can change to whatever)
 net = LeNet5()
