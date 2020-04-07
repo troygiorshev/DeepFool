@@ -180,7 +180,7 @@ def clip_tensor(A, minv, maxv):
 
 k = 1
 
-for batch_idx, (data, target) in enumerate(test_loader):
+for batch_idx, (data, target) in enumerate(full_loader):
     for im, label in zip(data, target):
 
         clip = lambda x: clip_tensor(x, 0, 255)
@@ -260,4 +260,3 @@ for batch_idx, (data, target) in enumerate(test_loader):
 # Compute average robustness (rho) for the simulation (See eqn 15 in DeepFool paper)
 rho = (1/k)*rho_sum
 print(f"Number of samples: {k}, Average robustness: {rho}")
-

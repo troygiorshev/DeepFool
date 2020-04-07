@@ -26,6 +26,7 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 * Download ImageNet LSVRC 2012 Validation Set from [http://www.image-net.org/index](here) or [https://academictorrents.com/collection/imagenet-2012](here).
   * Extract to `data/ILSVRC2012_img_val/raw/` (so the first image is `data/ILSVRC2012_img_val/raw/ILSVRC2012_val_00000001.JPEG`)
 * Run `test_deepfool.py` (That's `Python/test_deepfool.py`, as per above)
+  * This uses the pretrained Google LeNet model included in torchvision, as per the DeepFool Paper.
   * This populates `data/ILSVRC2012_img_val/perturbed/`
   * Note the Average robustness output
 * Run `denoise_ImageNet.py`
@@ -38,3 +39,4 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 * Run `test_deepfool_MNIST_LeNet.py`
   * We've already found and trained a LeNet model in pytorch.  You can find it in `models/MNIST/LeNet/`.  It was trained with `train_MNIST_LeNet.py`.
 * Run `denoise_MNIST.py`
+  * This `data/MNIST/originalImgModification/` and `data/MNIST/perturbedModification/`
