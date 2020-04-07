@@ -35,6 +35,6 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 
 ### MNIST, LeNet
 
-* Download MNIST, place in `data/MNIST/raw/`
-
+* Run `test_deepfool_MNIST_LeNet.py`
+  * We've already found and trained a LeNet model in pytorch.  You can find it in `models/MNIST/LeNet/`.  It was trained with `train_MNIST_LeNet.py`.
 * Run `denoise_MNIST.py`
