@@ -32,3 +32,6 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
   * This populates the subfolders of `data/ILSVRC2012_img_val/originalImgModification/` and `data/ILSVRC2012_img_val/perturbedModification/`
 * Run `classify_ImageNet.py`
   * This populates `data/ILSVRC2012_img_val/classification/`
+
+### MNIST, Fully Connected 500-150-10
+
