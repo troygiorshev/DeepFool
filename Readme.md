@@ -28,7 +28,7 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 * Run `test_deepfool.py` (That's `Python/test_deepfool.py`, as per above)
   * This populates `data/ILSVRC2012_img_val/perturbed/`
   * Note the Average robustness output
-* Run `denoise_image.py`
+* Run `denoise_ImageNet.py`
   * This populates the subfolders of `data/ILSVRC2012_img_val/originalImgModification/` and `data/ILSVRC2012_img_val/perturbedModification/`
-* Run `classify_images.py`
+* Run `classify_ImageNet.py`
   * This populates `data/ILSVRC2012_img_val/classification/`
