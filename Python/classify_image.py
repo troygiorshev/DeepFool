@@ -63,7 +63,7 @@ def classify_images():
             i = i+1
             bar.update(i)
 
-        with open(output, 'w') as f:
+        with open(output, 'w+') as f:
             writer = csv.writer(f, lineterminator='\n')
             for row in classify.items():
                 writer.writerow(row)
