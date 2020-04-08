@@ -45,6 +45,7 @@ def classify_images():
     '../data/MNIST_FC/originalImgModification/bilateralfilter/': '../data/MNIST_FC/classification/MNIST_classify_bilateralfilter.csv',
     '../data/MNIST_FC/originalImgModification/gaussianblur/': '../data/MNIST_FC/classification/MNIST_classify_gaussianblur.csv',
     '../data/MNIST_FC/originalImgModification/medianblur/': '../data/MNIST_FC/classification/MNIST_classify_medianblur.csv',
+    '../data/MNIST_FC/originalImgModification/dae/': '../data/MNIST_FC/classification/MNIST_classify_dae.csv',
     '../data/MNIST_FC/perturbed/': '../data/MNIST_FC/classification/MNIST_classify_perturbed.csv', #you may have to change this filepath
     '../data/MNIST_FC/perturbedModification/denoised/':'../data/MNIST_FC/classification/MNIST_classify_perturbed_denoised.csv',
     '../data/MNIST_FC/perturbedModification/sharpen/': '../data/MNIST_FC/classification/MNIST_classify_perturbed_sharpened.csv',

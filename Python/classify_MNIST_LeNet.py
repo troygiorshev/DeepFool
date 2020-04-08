@@ -47,6 +47,7 @@ def classify_images():
     '../data/MNIST/originalImgModification/bilateralfilter/': '../data/MNIST/classification/MNIST_classify_bilateralfilter.csv',
     '../data/MNIST/originalImgModification/gaussianblur/': '../data/MNIST/classification/MNIST_classify_gaussianblur.csv',
     '../data/MNIST/originalImgModification/medianblur/': '../data/MNIST/classification/MNIST_classify_medianblur.csv',
+    '../data/MNIST/originalImgModification/dae/': '../data/MNIST/classification/MNIST_classify_dae.csv',
     '../data/MNIST/perturbed/': '../data/MNIST/classification/MNIST_classify_perturbed.csv', #you may have to change this filepath
     '../data/MNIST/perturbedModification/denoised/':'../data/MNIST/classification/MNIST_classify_perturbed_denoised.csv',
     '../data/MNIST/perturbedModification/sharpen/': '../data/MNIST/classification/MNIST_classify_perturbed_sharpened.csv',
@@ -55,6 +56,10 @@ def classify_images():
     '../data/MNIST/perturbedModification/medianblur/': '../data/MNIST/classification/MNIST_classify_perturbed_medianblur.csv',
     '../data/MNIST/perturbedModification/dae/': '../data/MNIST/classification/MNIST_classify_perturbed_dae.csv'
     }
+
+    # paths = {
+    # '../data/MNIST/originalImgModification/dae/': '../data/MNIST/classification/MNIST_classify_dae.csv'
+    # }
 
     num_classes = 10
 
