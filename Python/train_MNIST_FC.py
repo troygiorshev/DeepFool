@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 
 class Net(nn.Module):
-    
     def __init__(self):
         super(Net, self).__init__()
         self.l1 = nn.Linear(28*28, 500)
