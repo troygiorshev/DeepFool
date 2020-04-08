@@ -43,10 +43,11 @@ def bilateralfilter(filepath):
 
 def MNISTdae(filepath, dae):
     img = cv2.imread(filepath)
-    # plt.imshow(img)
-    # plt.show()
+    #plt.imshow(img)
+    #plt.show()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = img[2:-2, 2:-2] / 255.0
+    #img = img[2:-2, 2:-2] / 255.0
+    img = img / 255.0
     img = img.reshape(-1, 28, 28, 1)
     #plt.imshow(np.squeeze(img), cmap=cm.gray)
     #plt.show()
@@ -58,64 +59,41 @@ def MNISTdae(filepath, dae):
 
 
 def adjust_images(input_path, output_folder, dae=None):
-    files = [f for f in glob.glob(input_path + "**/*.jpeg", recursive=True)]
+    files = [f for f in glob.glob(input_path + "**/*.JPEG", recursive=True)]
 
     bar = progressbar.ProgressBar(maxval=len(files)).start()
     i = 0
     for path in files:
         filename = os.path.basename(path)
 
-        """
-        #IMAGENET Manipulations
-        img = denoiseColor(path) 
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/denoised/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = sharpen(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/sharpen/'
-        img.save(savefile+filename)
-
-        img = bilateralfilter(path) 
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/bilateralfilter/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = gaussianblur(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/gaussianblur/'
-        cv2.imwrite(savefile+filename, img)
-
-        img = medianblur(path)
-        savefile='../data/ILSVRC2012_img_val/'+output_folder+'/medianblur/'
-        cv2.imwrite(savefile+filename, img)
-        """
-
         #MNIST Manipulations
         img = MNISTdae(path, dae)
-        savefile = '../data/MNIST/'+output_folder+'/dae/'
+        savefile = '../data/MNIST_FC/'+output_folder+'/dae/'
         cv2.imwrite(savefile+filename, img)
 
         img = denoiseColor(path) 
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        savefile='../data/MNIST/'+output_folder+'/denoised/'
+        savefile='../data/MNIST_FC/'+output_folder+'/denoised/'
         cv2.imwrite(savefile+filename, img)
 
 
         img = bilateralfilter(path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        savefile='../data/MNIST/'+output_folder+'/bilateralfilter/'
+        savefile='../data/MNIST_FC/'+output_folder+'/bilateralfilter/'
         cv2.imwrite(savefile+filename, img)
 
         img = gaussianblur(path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        savefile='../data/MNIST/'+output_folder+'/gaussianblur/'
+        savefile='../data/MNIST_FC/'+output_folder+'/gaussianblur/'
         cv2.imwrite(savefile+filename, img)
 
         img = medianblur(path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        savefile='../data/MNIST/'+output_folder+'/medianblur/'
+        savefile='../data/MNIST_FC/'+output_folder+'/medianblur/'
         cv2.imwrite(savefile+filename, img)
 
         img = sharpen(path)
-        savefile='../data/MNIST/'+output_folder+'/sharpen/'
+        savefile='../data/MNIST_FC/'+output_folder+'/sharpen/'
         img.save(savefile+filename)
 
         i = i+1
@@ -123,27 +101,17 @@ def adjust_images(input_path, output_folder, dae=None):
 
 
 def main():
-    """
-    #IMAGENET
-    # path to perturbed images
-    input_path = '../data/ILSVRC2012_img_val/perturbed/'
-    output_folder = 'perturbedModification'
-    adjust_images(input_path, output_folder)
-
-    input_path = '../data/ILSVRC2012_img_val/raw/'
-    output_folder = 'originalImgModification'
-    adjust_images(input_path, output_folder)
-    """
-
     #MNIST
     dae = keras.models.load_model('dae_mnist_autoencoder.h5')
 
-    input_path = '../data/MNIST/perturbed/'
+    input_path = '../data/MNIST_FC/perturbed/'
     output_folder = 'perturbedModification'
     adjust_images(input_path, output_folder, dae)
 
-    input_path = '../data/MNIST/orig/'
-    output_folder = 'originalModification'
+    print("Done Perturbed")
+
+    input_path = '../data/MNIST_FC/orig/'
+    output_folder = 'originalImgModification'
     adjust_images(input_path, output_folder, dae)
 
 
