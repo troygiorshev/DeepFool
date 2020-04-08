@@ -4,6 +4,10 @@ import torch as torch
 import copy
 from torch.autograd.gradcheck import zero_gradients
 
+def clip_tensor(A, minv, maxv):
+    A = torch.max(A, minv*torch.ones(A.shape))
+    A = torch.min(A, maxv*torch.ones(A.shape))
+    return A
 
 def deepfool(image, net, num_classes=10, overshoot=0.02, max_iter=50):
 
@@ -75,6 +79,8 @@ def deepfool(image, net, num_classes=10, overshoot=0.02, max_iter=50):
             pert_image = image + (1+overshoot)*torch.from_numpy(r_tot).cuda()
         else:
             pert_image = image + (1+overshoot)*torch.from_numpy(r_tot)
+
+        pert_image = clip_tensor(pert_image, 0, 255)
 
         x = Variable(pert_image, requires_grad=True)
         fs = net.forward(x)
