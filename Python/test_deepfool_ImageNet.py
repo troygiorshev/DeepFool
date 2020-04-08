@@ -143,6 +143,8 @@ def main():
     # Compute average robustness (rho) for the simulation (See eqn 15 in DeepFool paper)
     rho = (1/j)*rho_sum
     print(f"Number of samples: {j}, Average robustness: {rho}")
+    with open(base + "rho.txt", 'a') as rho_f:
+        rho_f.write(f"Number of samples: {j}, Average robustness: {rho}\n")
 
 if __name__ == "__main__":
     main()

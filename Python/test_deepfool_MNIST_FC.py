@@ -91,6 +91,8 @@ def clip_tensor(A, minv, maxv):
     A = torch.min(A, maxv*torch.ones(A.shape))
     return A
 
+base = '../data/MNIST_FC/'
+
 k = 1
 
 for batch_idx, (data, target) in enumerate(full_loader):
@@ -105,11 +107,10 @@ for batch_idx, (data, target) in enumerate(full_loader):
                                  transforms.Lambda(clip),
                                  transforms.ToPILImage()])
 
-        # Save original image in "../data/MNIST/orig" (MNIST/raw already contains the weird .gz things)
-        if (os.path.exists('../data/MNIST_FC/orig') != 1):
-            os.mkdir('../data/MNIST_FC/orig')
-        tf(im).save(
-                    '../data/MNIST_FC/orig/' + str(k) + '.JPEG')
+        # Save original image in "../data/MNIST_FC/orig" (MNIST/raw already contains the weird .gz things)
+        if (os.path.exists(base + 'orig') != 1):
+            os.mkdir(base + 'orig')
+        tf(im).save(base + 'orig/' + str(k) + '.JPEG')
 
         """
         print(im.size())
@@ -125,7 +126,7 @@ for batch_idx, (data, target) in enumerate(full_loader):
         
         print("Original label = ", label_orig)
         print("Perturbed label = ", label_pert)
-        print("loop num = ", loop_i)
+        print("Number of Iterations = ", loop_i)
 
         """
         print(pert_image[0].size())
@@ -150,38 +151,25 @@ for batch_idx, (data, target) in enumerate(full_loader):
 
 
         # Write image file to directory to hold perturbed images
-        if (os.path.exists('../data/MNIST_FC/perturbed') != 1):
-            os.mkdir('../data/MNIST_FC/perturbed')
-        tf(pert_image.cpu()[0]).save(
-                    '../data/MNIST_FC/perturbed/' + str(k) + '.JPEG')
+        if (os.path.exists(base + 'perturbed') != 1):
+            os.mkdir(base + 'perturbed')
+        tf(pert_image.cpu()[0]).save(base + 'perturbed/' + str(k) + '.JPEG')
 
         # Create .csv with original saved image name and predicted label
-        # If first image, want to create file so use 'w' arg
-        if (k == 1):
-            with open('../data/MNIST_FC/orig_names_and_labels.csv', 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([str(k) + 'JPEG', str(label_orig)])
-        # Else, want to append to already existing file, so pass arg 'a'
-        else:
-            with open('../data/MNIST_FC/orig_names_and_labels.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([str(k) + '.JPEG', str(label_orig)])
+        with open(base + 'orig_names_and_labels.csv', 'a', newline='') as orig_f:
+            writer = csv.writer(orig_f)
+            writer.writerow([str(k) + '.JPEG', str(label_orig)])
 
         # Create .csv with perturbed saved image name and predicted label
-        # If first image, want to create file so use 'w' arg
-        if (k == 1):
-            with open('../data/MNIST_FC/pert_names_and_labels.csv', 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([str(k) + 'JPEG', str(label_orig)])
-        # Else, want to append to already existing file, so pass arg 'a'
-        else:
-            with open('../data/MNIST_FC/pert_names_and_labels.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([str(k) + '.JPEG', str(label_orig)])
+        with open(base + 'pert_names_and_labels.csv', 'a', newline='') as pert_f:
+            writer = csv.writer(pert_f)
+            writer.writerow([str(k) + '.JPEG', str(label_pert)])
                 
         k += 1
 
 
 # Compute average robustness (rho) for the simulation (See eqn 15 in DeepFool paper)
-rho = (1/k)*rho_sum
-print(f"Number of samples: {k}, Average robustness: {rho}")
+rho = (1/(k-1))*rho_sum
+print(f"Number of samples: {k-1}, Average robustness: {rho}")
+with open(base + "rho.txt", 'a') as rho_f:
+    rho_f.write(f"Number of samples: {k}, Average robustness: {rho}\n")

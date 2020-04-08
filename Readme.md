@@ -40,17 +40,20 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 * Run `test_deepfool_MNIST_LeNet.py`
   * We've already found and trained a LeNet model in pytorch.  You can find it in `models/MNIST/LeNet/`.  It was trained with `train_MNIST_LeNet.py`.
   * This populates `data/MNIST_FC/perturbed/`
+  * This creates `data/MNIST_LeNet/orig_names_and_labels.csv` and `data/MNIST_LeNet/pert_names_and_labels.csv`
+  * Note the Average robustness output in `data/MNIST_LeNet/rho.txt`
 * Run `denoise_MNIST_LeNet.py`
-  * This populates the subfolders of `data/MNIST/originalImgModification/` and `data/MNIST/perturbedModification/`
+  * This populates the subfolders of `data/MNIST_LeNet/originalImgModification/` and `data/MNIST_LeNet/perturbedModification/`
 * Run `classify_MNIST_LeNet.py`
-  * This populates the `data/MNIST/classification/`
+  * This populates the `data/MNIST_LeNet/classification/`
 
 ### MNIST, Fully Connected 500-150-10
 
 * Run `test_deepfool_MNIST_FC.py`
   * We've already created and trained a LeNet model in pytorch.  You can find it in `models/MNIST/FC/`.  It was trained with `train_MNIST_FC.py`.
   * This populates `data/MNIST_FC/perturbed/`
-  * Note the Average Robustness output
+  * This creates `data/MNIST_FC/orig_names_and_labels.csv` and `data/MNIST_FC/pert_names_and_labels.csv`
+  * Note the Average robustness output in `data/MNIST_FC/rho.txt`
 * Run `denoise_MNIST.py`
   * This populates the subfolders of `data/MNIST_FC/originalImgModification/` and `data/MNIST_FC/perturbedModification/`
 * Run `classify_MNIST_FC.py`

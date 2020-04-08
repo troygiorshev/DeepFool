@@ -104,4 +104,3 @@ def main():
 if __name__=='__main__':
     num_proc = int(input("Number of Threads: "))
     main()
-
