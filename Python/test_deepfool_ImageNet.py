@@ -82,7 +82,7 @@ def main():
                 # Remove the mean
                 im = transforms.Compose([
                     transforms.Resize(256),
-                    transforms.CenterCrop(224),
+                    #transforms.CenterCrop(224),
                     transforms.ToTensor(),
                     transforms.Normalize(mean = mean,
                                         std = std)])(orig_img)
@@ -110,10 +110,11 @@ def main():
 
                 tf =  transforms.Compose([transforms.Normalize(mean = [0, 0, 0], std = [(1/0.229), (1/0.244), (1/0.255)]), 
                                     transforms.Normalize(mean = [-0.485, -0.456, -0.406], std=[1,1,1]),
-                                    transforms.Lambda(clip), 
+                                    transforms.Lambda(clip),
                                     transforms.ToPILImage(),
-                                    transforms.Resize(256),
-                                    transforms.CenterCrop(224)])
+                                    #transforms.Resize(256),
+                                    #transforms.CenterCrop(224)
+                                    ])
 
                 # Add to cumulative sum term to get rho (See eqn 15 in DeepFool paper)
                 rho_sum = rho_sum + r_norm / np.linalg.norm(img_vect)
