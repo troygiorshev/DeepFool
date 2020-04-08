@@ -13,6 +13,7 @@ import torchvision.models as models
 from PIL import Image
 from deepfool import deepfool
 import os
+import csv
 
 def main():
     # Number of images to perturb, 0 means "all of them"
@@ -54,7 +55,7 @@ def main():
     raw_walk_gen = os.walk(base + "raw/", topdown=True)
     _, _, files_raw = next(raw_walk_gen)
     files_tmp = [f for f in files_raw if f != ".gitignore"] # Remove .gitignore
-    files = [f for f in files_tmp if not (f in pert_files)]
+    files = [f for f in files_tmp if not (f in pert_files)] # Don't process pictures that have already been perturbed
 
     sorted_files = sorted(files, key=lambda item: int(item[18:23]))
 
@@ -62,7 +63,7 @@ def main():
 
     try:
         # Now for the correct number of images
-        for _, name in enumerate(sorted_files[0:end]):
+        for name in sorted_files[0:end]:
             orig_img = Image.open(base + "raw/" + name)
             
             # Preprocessing only works for colour images
@@ -86,8 +87,6 @@ def main():
                     transforms.Normalize(mean = mean,
                                         std = std)])(orig_img)
                 
-                #print(im.shape)
-                #quit()
                 r, loop_i, label_orig, label_pert, pert_image = deepfool(im, net)
 
                 # Add L2 norm of perturbation to array (See numerator of eqn 15 in DeepFool paper)
@@ -105,23 +104,35 @@ def main():
 
                 print("Original label = ", str_label_orig)
                 print("Perturbed label = ", str_label_pert)
+                print("Number of Iterations = ", loop_i)
             
                 clip = lambda x: clip_tensor(x, 0, 255)
 
-                tf =  transforms.Compose([transforms.Normalize(mean = [0, 0, 0],
-                                std = [(1/0.229), (1/0.244), (1/0.255)]), transforms.Normalize(mean = [-0.485, -0.456, -0.406], std=[1,1,1]),
-                    transforms.Lambda(clip), transforms.ToPILImage(),
-                    transforms.Resize(256),
-                    transforms.CenterCrop(224)])
-
-                # Write image file to directory to hold perturbed images
-                if (os.path.exists(base + 'perturbed/') != 1):
-                    os.mkdir(base + 'perturbed')
-                tf(pert_image.cpu()[0]).save(
-                    base + 'perturbed/' + name, 'JPEG')
+                tf =  transforms.Compose([transforms.Normalize(mean = [0, 0, 0], std = [(1/0.229), (1/0.244), (1/0.255)]), 
+                                    transforms.Normalize(mean = [-0.485, -0.456, -0.406], std=[1,1,1]),
+                                    transforms.Lambda(clip), 
+                                    transforms.ToPILImage(),
+                                    transforms.Resize(256),
+                                    transforms.CenterCrop(224)])
 
                 # Add to cumulative sum term to get rho (See eqn 15 in DeepFool paper)
                 rho_sum = rho_sum + r_norm / np.linalg.norm(img_vect)
+
+                # Write image file to directory to hold perturbed images
+                if (os.path.exists(base + 'perturbed/') != 1):
+                    os.mkdir(base + 'perturbed/')
+                tf(pert_image.cpu()[0]).save(
+                    base + 'perturbed/' + name, '.JPEG')
+
+                # Create .csv with original saved image name and predicted label
+                with open(base + 'orig_names_and_labels.csv', 'a') as orig_f:
+                    writer = csv.writer(orig_f, lineterminator='\n')
+                    writer.writerow([name, str(label_orig)])
+
+                # Create .csv with perturbed saved image name and predicted label
+                with open(base + 'pert_names_and_labels.csv', 'a') as pert_f:
+                    writer = csv.writer(pert_f, lineterminator='\n')
+                    writer.writerow([name, str(label_pert)])
 
                 j += 1
             else:

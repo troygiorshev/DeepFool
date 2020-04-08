@@ -28,7 +28,8 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 * Run `test_deepfool_ImageNet.py` (That's `Python/test_deepfool_ImageNet.py`, as per above)
   * This uses the pretrained Google LeNet model included in torchvision, as per the DeepFool Paper.
   * This populates `data/ILSVRC2012_img_val/perturbed/`
-  * Note the Average robustness output
+  * This creates `data/ILSVRC2012_img_val/orig_names_and_labels.csv` and `data/ILSVRC2012_img_val/pert_names_and_labels.csv`
+  * Note the Average robustness output in `data/ISLVRC2012_img_val/rho.txt`
 * Run `denoise_ImageNet.py`
   * This populates the subfolders of `data/ILSVRC2012_img_val/originalImgModification/` and `data/ILSVRC2012_img_val/perturbedModification/`
 * Run `classify_ImageNet.py`

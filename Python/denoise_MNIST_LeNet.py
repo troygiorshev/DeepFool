@@ -105,7 +105,7 @@ def main():
 
     input_path = '../data/MNIST/perturbed/'
     output_folder = 'perturbedModification'
-    #adjust_images(input_path, output_folder, dae)
+    adjust_images(input_path, output_folder, dae)
 
     input_path = '../data/MNIST/orig/'
     output_folder = 'originalImgModification'

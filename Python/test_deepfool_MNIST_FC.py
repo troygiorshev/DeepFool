@@ -125,6 +125,7 @@ for batch_idx, (data, target) in enumerate(full_loader):
         
         print("Original label = ", label_orig)
         print("Perturbed label = ", label_pert)
+        print("loop num = ", loop_i)
 
         """
         print(pert_image[0].size())
@@ -163,6 +164,18 @@ for batch_idx, (data, target) in enumerate(full_loader):
         # Else, want to append to already existing file, so pass arg 'a'
         else:
             with open('../data/MNIST_FC/orig_names_and_labels.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([str(k) + '.JPEG', str(label_orig)])
+
+        # Create .csv with perturbed saved image name and predicted label
+        # If first image, want to create file so use 'w' arg
+        if (k == 1):
+            with open('../data/MNIST_FC/pert_names_and_labels.csv', 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([str(k) + 'JPEG', str(label_orig)])
+        # Else, want to append to already existing file, so pass arg 'a'
+        else:
+            with open('../data/MNIST_FC/pert_names_and_labels.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([str(k) + '.JPEG', str(label_orig)])
                 
