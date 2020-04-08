@@ -16,6 +16,7 @@ import glob
 import csv
 import progressbar
 
+torch.set_num_threads(2)
 
 def classify_images():
     net = models.googlenet(pretrained=True)
@@ -74,4 +75,3 @@ def main():
 
 if __name__=='__main__':
     main()
-        

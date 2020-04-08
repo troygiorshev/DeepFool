@@ -12,12 +12,13 @@ import math
 import torchvision.models as models
 from PIL import Image
 import os
-import imageio
+#import imageio
 import glob
 import csv
 import progressbar
-from test_deepfool_MNIST_LeNet import LeNet5
+from train_MNIST_LeNet import LeNet5
 
+#torch.set_num_threads(2)
 
 def clip_tensor(A, minv, maxv):
     A = torch.max(A, minv*torch.ones(A.shape))
@@ -40,7 +41,7 @@ def classify_images():
                                     ])
 
     paths = {
-    '../data/MNIST/raw/': '../data/MNIST/classification/MNIST_classify.csv',
+    '../data/MNIST/orig/': '../data/MNIST/classification/MNIST_classify.csv',
     '../data/MNIST/originalImgModification/denoised/':'../data/MNIST/classification/MNIST_classify_denoised.csv',
     '../data/MNIST/originalImgModification/sharpen/': '../data/MNIST/classification/MNIST_classify_sharpened.csv',
     '../data/MNIST/originalImgModification/bilateralfilter/': '../data/MNIST/classification/MNIST_classify_bilateralfilter.csv',
@@ -71,7 +72,6 @@ def classify_images():
             f_image = net.forward(Variable(image[None, :, :, :], requires_grad=True)).data.cpu().numpy().flatten()
             I = (np.array(f_image)).flatten().argsort()[::-1]
 
-            I = I[0:num_classes]
             label = I[0]
 
             classify[os.path.basename(path)]=label
@@ -79,7 +79,7 @@ def classify_images():
             bar.update(i)
 
         with open(output, 'w') as f:
-            writer = csv.writer(f)
+            writer = csv.writer(f, lineterminator='\n')
             for row in classify.items():
                 writer.writerow(row)
         print('FINISHED: '+output)
@@ -90,4 +90,3 @@ def main():
 
 if __name__=='__main__':
     main()
-        
