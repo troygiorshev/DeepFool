@@ -35,3 +35,10 @@ Note that **all** scripts are in `Python/` and as such we omit `Python/` from th
 
 ### MNIST, Fully Connected 500-150-10
 
+* Run `test_deepfool_MNIST_FC.py`
+  * We've already created and trained a LeNet model in pytorch.  You can find it in `models/MNIST/FC/`.  It was trained with `train_MNIST_FC.py`.
+  * This populates `data/MNIST_FC/perturbed/`
+* Run `denoise_MNIST.py`
+  * This populates the subfolders of `data/MNIST_FC/originalImgModification/` and `data/MNIST_FC/perturbedModification/`
+* Run `classify_images_MNIST_FC/py`
+  * This populates `data/MNIST_FC/classification`
