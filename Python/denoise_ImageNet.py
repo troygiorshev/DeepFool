@@ -44,10 +44,10 @@ def adjust_images(input_path, output_folder):
     num_files = len(files_all)
 
     proc_list = []
-    size = num_files // num_proc
+    size = num_files // NUM_PROC
 
-    for i in range(num_proc):
-        if i != num_proc - 1:
+    for i in range(NUM_PROC):
+        if i != NUM_PROC - 1:
             files_part = files_all[i*size:(i+1)*size]
         else:
             files_part = files_all[i*size:]
@@ -102,5 +102,5 @@ def main():
     print("Finished All Images")
 
 if __name__=='__main__':
-    num_proc = int(input("Number of Threads: "))
+    NUM_PROC = int(input("Number of Threads: "))
     main()

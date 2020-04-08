@@ -122,7 +122,7 @@ def main():
                 if (os.path.exists(base + 'perturbed/') != 1):
                     os.mkdir(base + 'perturbed/')
                 tf(pert_image.cpu()[0]).save(
-                    base + 'perturbed/' + name, '.JPEG')
+                    base + 'perturbed/' + name)
 
                 # Create .csv with original saved image name and predicted label
                 with open(base + 'orig_names_and_labels.csv', 'a') as orig_f:
