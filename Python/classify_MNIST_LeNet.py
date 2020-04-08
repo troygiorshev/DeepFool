@@ -57,10 +57,6 @@ def classify_images():
     '../data/MNIST/perturbedModification/dae/': '../data/MNIST/classification/MNIST_classify_perturbed_dae.csv'
     }
 
-    # paths = {
-    # '../data/MNIST/originalImgModification/dae/': '../data/MNIST/classification/MNIST_classify_dae.csv'
-    # }
-
     num_classes = 10
 
     for input, output in paths.items():
