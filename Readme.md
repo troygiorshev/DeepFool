@@ -8,7 +8,7 @@
 
 ## Attribution
 
-Cloned from <https://github.com/LTS4/DeepFool>, following [DeepFool](https://arxiv.org/abs/1511.04599) (See Bottom of Readme).
+Cloned from <https://github.com/LTS4/DeepFool>, following [DeepFool](https://arxiv.org/abs/1511.04599) (Full Citation Below).
 
 ## Dependencies
 
